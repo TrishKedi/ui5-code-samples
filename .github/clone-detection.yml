@@ -17,10 +17,18 @@ jobs:
       REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: checkout
+      - name: checkout query repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          path: query_repo
+
+      - name: checkout clone detection repo
+        uses: actions/checkout@v4
+        with:
+          repository: TrishKedi/cdd-ci
+          ref: main
+          path: clone_detection_repo
 
       - name: Install python
         uses: actions/setup-python@v5
@@ -29,19 +37,25 @@ jobs:
         uses: reviewdog/action-setup@v1
         
       - name: Install dependencies
+        working-directory: clone_detection_repo
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Get changed files
+        working-directory: query_repo
         run: |
           git fetch origin "${{ github.base_ref }}" --depth=1
           git diff --name-only "origin/${{ github.base_ref }}...HEAD" -- '*.js' > changed_files.txt
           echo "Changed files:"
           cat changed_files.txt
 
-      - name: Run script 
+      - name: Search for clones 
         run: |
-          python src/app.py --changed-files changed_files.txt --candidate-repo repos/code-samples-ui \
+          python src/app.py --changed-files changed_files.txt --candidate-repo repos/code-samples-ui 
+
+      - name: Comment with reviewdog
+        run: |
+          cat clone_detection_repo/data/diagnostics.json \
           | reviewdog -f=rdjsonl -reporter=github-pr-review -level=warning -filter-mode=nofilter
 
 
