@@ -59,7 +59,7 @@ jobs:
       - name: Comment with reviewdog
         run: |
           cat clone_detection_repo/data/exports/diagnostics.json \
-          | reviewdog -f=rdjsonl -reporter=github-pr-review -level=warning -filter-mode=nofilter
+          | reviewdog -f=rdjson -reporter=github-pr-review -level=warning -filter-mode=nofilter
 
 
 
