@@ -50,10 +50,11 @@ jobs:
           cat changed_files.txt
 
       - name: Search for clones 
+        working-directory: query_repo
         run: |
-          python clone_detection_repo/src/app.py \
-          --changed-files query_repo/changed_files.txt \
-          --candidate-repo query_repo/code-samples-ui 
+          python ../clone_detection_repo/src/app.py \
+          --changed-files changed_files.txt \
+          --candidate-repo code-samples-ui 
 
       - name: Comment with reviewdog
         run: |
