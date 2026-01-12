@@ -51,7 +51,9 @@ jobs:
 
       - name: Search for clones 
         run: |
-          python src/app.py --changed-files changed_files.txt --candidate-repo repos/code-samples-ui 
+          python src/app.py \
+          --changed-files query_repo/changed_files.txt \
+          --candidate-repo query_repo/code-samples-ui 
 
       - name: Comment with reviewdog
         run: |
