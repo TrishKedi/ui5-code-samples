@@ -57,8 +57,9 @@ jobs:
           --candidate-repo code-samples-ui 
 
       - name: Comment with reviewdog
+        working-directory: query_repo
         run: |
-          cat clone_detection_repo/data/exports/diagnostics.json \
+          cat ../clone_detection_repo/data/exports/diagnostics.json \
           | reviewdog -f=rdjson -reporter=github-pr-review -level=warning -filter-mode=nofilter
 
 
