@@ -17,6 +17,13 @@ jobs:
       REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - name: checkout candidate repo
+        uses: actions/checkout@v4
+        with:
+          repository: TrishKedi/ui5
+          ref: main
+          path: candidate_repo
+
       - name: checkout query repo
         uses: actions/checkout@v4
         with:
@@ -54,7 +61,7 @@ jobs:
         run: |
           python ../clone_detection_repo/src/app.py \
           --changed-files changed_files.txt \
-          --candidate-repo code-samples-ui 
+          --candidate-repo ../candidate_repo
 
       - name: Comment with reviewdog
         working-directory: query_repo
