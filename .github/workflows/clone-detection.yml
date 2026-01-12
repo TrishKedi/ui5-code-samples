@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: TrishKedi/cdd-ci
-          ref: main
+          ref: test/cd-workflow
           path: clone_detection_repo
 
       - name: Install python
