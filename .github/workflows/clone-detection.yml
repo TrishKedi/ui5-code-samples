@@ -14,9 +14,15 @@ jobs:
     environment: main
     env: 
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - name: checkout candidate repo
+        uses: actions/checkout@v4
+        with:
+          repository: TrishKedi/ui5
+          ref: main
+          path: candidate_repo
+
       - name: checkout query repo
         uses: actions/checkout@v4
         with:
@@ -27,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: TrishKedi/cdd-ci
-          ref: main
+          ref: task/streaming
           path: clone_detection_repo
 
       - name: Install python
@@ -50,13 +56,15 @@ jobs:
           cat changed_files.txt
 
       - name: Search for clones 
+        working-directory: query_repo
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python src/app.py --changed-files changed_files.txt --candidate-repo repos/code-samples-ui 
+          python ../clone_detection_repo/src/app.py \
+          --changed-files changed_files.txt \
+          --candidate-repo ../candidate_repo \
+          | reviewdog -f=rdjsonl -reporter=github-pr-review -level=warning -filter-mode=added
 
-      - name: Comment with reviewdog
-        run: |
-          cat clone_detection_repo/data/diagnostics.json \
-          | reviewdog -f=rdjsonl -reporter=github-pr-review -level=warning -filter-mode=nofilter
 
 
 
