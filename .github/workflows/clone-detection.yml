@@ -63,7 +63,7 @@ jobs:
           python ../clone_detection_repo/src/app.py \
           --changed-files changed_files.txt \
           --candidate-repo ../candidate_repo \
-          | reviewdog -f=rdjsonl -reporter=github-pr-review -level=warning -filter-mode=nofilter
+          | reviewdog -f=rdjsonl -reporter=github-pr-review -level=warning -filter-mode=added
 
 
 
